@@ -12,7 +12,7 @@ import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockNotExistsEx
 
 @RestController
 @RequestMapping("/api/stock")
-public class StockController {
+class StockController {
 
     @Autowired
     private StockServiceImpl stockService;

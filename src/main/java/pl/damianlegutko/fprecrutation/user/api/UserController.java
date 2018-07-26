@@ -7,18 +7,19 @@ import org.springframework.web.bind.annotation.*;
 import pl.damianlegutko.fprecrutation.user.UserServiceImpl;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserAlreadyExistsException;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserException;
+import pl.damianlegutko.fprecrutation.user.exceptions.UserHaveNotEnoughMoneyException;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserNotExistsException;
 
 @RestController
 @RequestMapping("/api/user")
-public class UserController {
+class UserController {
 
     @Autowired
     private UserServiceImpl user2service;
 
-    @GetMapping("/get/{login}")
-    ResponseEntity getUser(@PathVariable String login) {
-       UserDTO userDTO = user2service.findUserByUsername(login);
+    @GetMapping("/get/{userName}")
+    ResponseEntity getUser(@PathVariable String userName) {
+       UserDTO userDTO = user2service.findUserByUsername(userName);
        return new ResponseEntity(userDTO, HttpStatus.OK);
     }
 
@@ -31,7 +32,21 @@ public class UserController {
     @PostMapping("/signin")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void signin(@RequestBody UserDTO user) {
-        user2service.findUserByUsername(user.getUsername());//TODO dodac logowanie
+        user2service.findUserByUsername(user.getUsername());
+    }
+
+    //TODO temporary REST
+    @PostMapping("/addCash/{userName}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void increaseUserCash(@PathVariable String userName, @RequestParam double amount) {
+        user2service.giveMoneyToUser(userName, amount);
+    }
+
+    //TODO temporary REST
+    @PostMapping("/subtractCash/{userName}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void decreaseUserCash(@PathVariable String userName, @RequestParam double amount) {
+        user2service.takeMoneyFromUser(userName, amount);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -41,6 +56,10 @@ public class UserController {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(UserAlreadyExistsException.class)
     void userExists() {}
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UserHaveNotEnoughMoneyException.class)
+    void userHaveNotEnaughMoney() {}
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserException.class)
