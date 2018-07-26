@@ -3,6 +3,7 @@ package pl.damianlegutko.fprecrutation.user;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.damianlegutko.fprecrutation.user.api.UserDTO;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserAlreadyExistsException;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserHaveNotEnoughMoneyException;
@@ -18,6 +19,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @SneakyThrows
+    @Transactional(readOnly = true)
     public UserDTO findUserByUsername(String userName) {
         User user = userRepository.findByUsername(userName);
 
@@ -29,6 +31,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @SneakyThrows
+    @Transactional
     public void saveUser(UserDTO user) {
         if(nonNull(userRepository.findByUsername(user.getUsername()))) throw new UserAlreadyExistsException();
 
@@ -36,6 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @SneakyThrows
+    @Transactional
     public void giveMoneyToUser(String userName, BigDecimal moneyAmount) {
         User user = userRepository.findByUsername(userName);
 
@@ -48,6 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @SneakyThrows
+    @Transactional
     public void takeMoneyFromUser(String userName, BigDecimal moneyAmount) {
         User user = userRepository.findByUsername(userName);
 

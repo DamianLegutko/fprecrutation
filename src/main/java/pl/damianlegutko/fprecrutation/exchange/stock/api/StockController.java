@@ -1,10 +1,10 @@
 package pl.damianlegutko.fprecrutation.exchange.stock.api;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.damianlegutko.fprecrutation.exchange.stock.StockServiceImpl;
+import pl.damianlegutko.fprecrutation.exchange.stock.StockService;
 import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockAlreadyExistsException;
 import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockCodeOutsideEnumException;
 import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockException;
@@ -12,10 +12,10 @@ import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockNotExistsEx
 
 @RestController
 @RequestMapping("/api/stock")
+@RequiredArgsConstructor
 class StockController {
 
-    @Autowired
-    private StockServiceImpl stockService;
+    private final StockService stockService;
 
     @GetMapping("/get/{companyCode}")
     ResponseEntity getStock(@PathVariable String companyCode) {

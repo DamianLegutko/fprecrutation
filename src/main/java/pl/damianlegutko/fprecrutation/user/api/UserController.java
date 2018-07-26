@@ -1,10 +1,10 @@
 package pl.damianlegutko.fprecrutation.user.api;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.damianlegutko.fprecrutation.user.UserServiceImpl;
+import pl.damianlegutko.fprecrutation.user.UserService;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserAlreadyExistsException;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserException;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserHaveNotEnoughMoneyException;
@@ -14,10 +14,10 @@ import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/user")
+@RequiredArgsConstructor
 class UserController {
 
-    @Autowired
-    private UserServiceImpl user2service;
+    private final UserService user2service;
 
     @GetMapping("/get/{userName}")
     ResponseEntity getUser(@PathVariable String userName) {
