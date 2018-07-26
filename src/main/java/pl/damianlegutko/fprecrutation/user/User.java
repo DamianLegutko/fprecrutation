@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "USERS")
@@ -25,5 +26,5 @@ class User {
     private String password;
 
     @Column(nullable = false)
-    private Double money;
+    private BigDecimal money;
 }

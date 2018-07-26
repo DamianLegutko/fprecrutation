@@ -8,6 +8,8 @@ import pl.damianlegutko.fprecrutation.user.exceptions.UserAlreadyExistsException
 import pl.damianlegutko.fprecrutation.user.exceptions.UserHaveNotEnoughMoneyException;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserNotExistsException;
 
+import java.math.BigDecimal;
+
 import static java.util.Objects.nonNull;
 
 @Service("user2service")
@@ -34,11 +36,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @SneakyThrows
-    public void giveMoneyToUser(String userName, double moneyAmount) {
+    public void giveMoneyToUser(String userName, BigDecimal moneyAmount) {
         User user = userRepository.findByUsername(userName);
 
         if (nonNull(user)) {
-            user.setMoney(DoubleOperations.add(user.getMoney(), moneyAmount));
+            user.setMoney(user.getMoney().add(moneyAmount));
 
             userRepository.save(user);
         }
@@ -46,13 +48,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @SneakyThrows
-    public void takeMoneyFromUser(String userName, double moneyAmount) {
+    public void takeMoneyFromUser(String userName, BigDecimal moneyAmount) {
         User user = userRepository.findByUsername(userName);
 
         if (nonNull(user)) {
-            if (DoubleOperations.compare(user.getMoney(), moneyAmount) < 0) throw new UserHaveNotEnoughMoneyException();
+            if (user.getMoney().compareTo(moneyAmount) < 0) throw new UserHaveNotEnoughMoneyException();
 
-            user.setMoney(DoubleOperations.subtract(user.getMoney(), moneyAmount));
+            user.setMoney(user.getMoney().subtract(moneyAmount));
 
             userRepository.save(user);
         }
