@@ -23,9 +23,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/lib/**", "/register", "/login", "/fprecrutation/api/**").permitAll()
+                .antMatchers("/lib/**", "/register", "/login", "/h2-console/**", "/fprecrutation/api/**").permitAll()
                 .and().formLogin().loginPage("/login")
                 .and().exceptionHandling().accessDeniedPage("/Access_Denied")
+                .and().headers().frameOptions().disable()
                 .and().csrf().disable();
     }
 

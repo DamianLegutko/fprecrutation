@@ -5,9 +5,11 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import pl.damianlegutko.fprecrutation.exchange.Company;
 import pl.damianlegutko.fprecrutation.exchange.stock.api.StockDTO;
-import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockNotExistsException;
 import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockAlreadyExistsException;
 import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockCodeOutsideEnumException;
+import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockNotExistsException;
+
+import javax.annotation.PostConstruct;
 
 import static java.util.Objects.nonNull;
 
@@ -45,6 +47,19 @@ public class StockServiceImpl implements StockService {
     @SneakyThrows
     public void updateStock(StockDTO stock) {
         stockRepository.save(mapDtoToStock(stock));
+    }
+
+    @PostConstruct
+    @SneakyThrows
+    public void initializeStock() {
+        Stock stock = Stock.builder()
+                        .amount(10000L)
+                        .build();
+
+        for(Company company : Company.values()) {
+            stock.setCompany(company);
+            stockRepository.save(stock);
+        }
     }
 
     @SneakyThrows
