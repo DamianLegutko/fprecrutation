@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import pl.damianlegutko.fprecrutation.user.api.UserDTO;
+import pl.damianlegutko.fprecrutation.user.exceptions.UserAlreadyExistsException;
+import pl.damianlegutko.fprecrutation.user.exceptions.UserNotExistsException;
 
 import static java.util.Objects.nonNull;
 
