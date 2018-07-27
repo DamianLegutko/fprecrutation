@@ -22,5 +22,5 @@ class Stock {
     private Company company;
 
     @Column(nullable = false)
-    private Long amount;
+    private Long stockAmount;
 }

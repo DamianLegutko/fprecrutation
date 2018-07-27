@@ -4,78 +4,78 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.damianlegutko.fprecrutation.exchange.Company;
 import pl.damianlegutko.fprecrutation.exchange.asset.api.AssetDTO;
-import pl.damianlegutko.fprecrutation.exchange.asset.exceptions.UserHaveNotEnoughStocksException;
-import pl.damianlegutko.fprecrutation.exchange.stock.StockRepository;
-import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockNotExistsException;
-import pl.damianlegutko.fprecrutation.user.UserRepository;
-import pl.damianlegutko.fprecrutation.user.exceptions.UserNotExistsException;
+import pl.damianlegutko.fprecrutation.exchange.stock.StockService;
+import pl.damianlegutko.fprecrutation.exchange.stock.api.StockDTO;
+import pl.damianlegutko.fprecrutation.user.UserService;
+import pl.damianlegutko.fprecrutation.user.api.UserDTO;
 
-import static java.util.Objects.nonNull;
+import java.math.BigDecimal;
+
+import static java.util.Objects.isNull;
 
 @Service("assetService")
 @AllArgsConstructor
 public class AssetServiceImpl implements AssetService {
     private final AssetRepository assetRepository;
-    private final StockRepository stockRepository;
-    private final UserRepository userRepository;
+    private final StockService stockService;
+    private final UserService userService;
 
     @SneakyThrows
     @Transactional
     public void buyAssetByUser(AssetDTO assetDTO) {
-        Company company = Company.parseStockCode(assetDTO.getCompanyCode());
 
-        if(!userRepository.existsByUsername(assetDTO.getUserName())) throw new UserNotExistsException();
-        if(!stockRepository.existsByCompany(Company.parseStockCode(assetDTO.getCompanyCode()))) throw new StockNotExistsException();
+        //region subtract money from user wallet
+        UserDTO userDTO = userService.findUserByUsername(assetDTO.getUserName());
+        BigDecimal totalStocksCost = assetDTO.getStockPrice().multiply(new BigDecimal(assetDTO.getStockAmount()));
+        userService.takeMoneyFromUser(userDTO.getUsername(), totalStocksCost);
+        //endregion
 
-        Asset asset = assetRepository.findByUserNameAndCompany(assetDTO.getUserName(), company);
+        //region subtract stocks from stock exchange
+        StockDTO stockDTO = stockService.findStockByCompany(assetDTO.getCompanyCode());
+        stockDTO.decreaseStockAmount(assetDTO.getStockAmount());
+        stockService.updateStock(stockDTO);
+        //endregion
 
-        if(nonNull(asset)){
-            asset.setAmount(asset.getAmount().add(assetDTO.getAmount()));
-            //transakcja pieniezna
-            //transakcja na gieldzie
-        }
-        else {
-            asset = mapDtoToAsset(assetDTO);
-        }
+        //region add stocks to user wallet
+        Asset asset = assetRepository.findByUserNameAndCompany(assetDTO.getUserName(), assetDTO.getCompany());
+
+        if(isNull(asset)) asset = mapDtoToAsset(assetDTO);
+        else              asset.increaseStockAmount(assetDTO.getStockAmount());
 
         assetRepository.save(asset);
+        //endregion
     }
 
     @SneakyThrows
     @Transactional
     public void sellAssetByUser(AssetDTO assetDTO) {
-        Company company = Company.parseStockCode(assetDTO.getCompanyCode());
 
-        if(!userRepository.existsByUsername(assetDTO.getUserName())) throw new UserNotExistsException();
-        if(!stockRepository.existsByCompany(Company.parseStockCode(assetDTO.getCompanyCode()))) throw new StockNotExistsException();
+        //region add money to user wallet
+        UserDTO userDTO = userService.findUserByUsername(assetDTO.getUserName());
+        BigDecimal totalStocksCost = assetDTO.getStockPrice().multiply(new BigDecimal(assetDTO.getStockAmount()));
+        userService.takeMoneyFromUser(userDTO.getUsername(), totalStocksCost);
+        //endregion
 
-        Asset asset = assetRepository.findByUserNameAndCompany(assetDTO.getUserName(), company);
+        //region add stocks to stock exchange
+        StockDTO stockDTO = stockService.findStockByCompany(assetDTO.getCompanyCode());
+        stockDTO.increaseStockAmount(assetDTO.getStockAmount());
+        stockService.updateStock(stockDTO);
+        //endregion
 
-        if(nonNull(asset)){
-            if (asset.getAmount().compareTo(assetDTO.getAmount()) > 0) {
-                asset.setAmount(asset.getAmount().subtract(assetDTO.getAmount()));
-                //transakcja pieniezna
-                //transakcja na gieldzie
-            }
-            else {
-                throw new UserHaveNotEnoughStocksException();
-            }
-        }
-        else {
-            asset = mapDtoToAsset(assetDTO);
-        }
-
+        //region subtract stocks from user wallet
+        Asset asset = assetRepository.findByUserNameAndCompany(assetDTO.getUserName(), assetDTO.getCompany());
+        asset.decreaseStockAmount(assetDTO.getStockAmount());
         assetRepository.save(asset);
+        //endregion
     }
 
     @SneakyThrows
     private Asset mapDtoToAsset(AssetDTO asset) {
         return Asset.builder()
-                .company(Company.parseStockCode(asset.getCompanyCode()))
+                .company(asset.getCompany())
                 .userName(asset.getUserName())
-                .amount(asset.getAmount())
+                .stockAmount(asset.getStockAmount())
                 .build();
     }
 }

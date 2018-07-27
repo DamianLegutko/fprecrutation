@@ -40,8 +40,7 @@ public class StockServiceImpl implements StockService {
     @SneakyThrows
     @Transactional
     public void saveStock(StockDTO stock) {
-        Company companyToFind = Company.parseStockCode(stock.getCompanyCode());
-        if(nonNull(stockRepository.findByCompany(companyToFind))) throw new StockAlreadyExistsException();
+        if(nonNull(stockRepository.findByCompany(stock.getCompany()))) throw new StockAlreadyExistsException();
 
         updateStock(stock);
     }
@@ -57,7 +56,7 @@ public class StockServiceImpl implements StockService {
     @Transactional
     public void initializeStock() {
         Stock stock = Stock.builder()
-                        .amount(10000L)
+                        .stockAmount(10000L)
                         .build();
 
         for(Company company : Company.values()) {
@@ -69,15 +68,15 @@ public class StockServiceImpl implements StockService {
     @SneakyThrows
     private Stock mapDtoToStock(StockDTO stock) {
         return Stock.builder()
-                .company(Company.parseStockCode(stock.getCompanyCode()))
-                .amount(stock.getAmount())
+                .company(stock.getCompany())
+                .stockAmount(stock.getStockAmount())
                 .build();
     }
 
     private StockDTO mapStockToDto(Stock stock) {
         return StockDTO.builder()
                 .companyCode(stock.getCompany().name())
-                .amount(stock.getAmount())
+                .stockAmount(stock.getStockAmount())
                 .build();
     }
 }

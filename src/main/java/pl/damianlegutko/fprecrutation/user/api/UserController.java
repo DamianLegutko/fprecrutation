@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 class UserController {
 
-    private final UserService user2service;
+    private UserService user2service;
 
     @GetMapping("/get/{userName}")
     ResponseEntity getUser(@PathVariable String userName) {

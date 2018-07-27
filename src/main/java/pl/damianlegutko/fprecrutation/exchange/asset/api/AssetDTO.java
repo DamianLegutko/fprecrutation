@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.damianlegutko.fprecrutation.exchange.Company;
+import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockCodeOutsideEnumException;
 
 import java.math.BigDecimal;
 
@@ -14,7 +16,13 @@ import java.math.BigDecimal;
 public class AssetDTO {
     String companyCode;
 
-    BigDecimal amount;
+    Long stockAmount;
+
+    BigDecimal stockPrice;
 
     String userName;
+
+    public Company getCompany() throws StockCodeOutsideEnumException {
+        return Company.parseStockCode(companyCode);
+    }
 }
