@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.damianlegutko.fprecrutation.ResponseMessage;
 import pl.damianlegutko.fprecrutation.exchange.stock.StockService;
 import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockAlreadyExistsException;
 import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockCodeOutsideEnumException;
@@ -35,19 +36,23 @@ class StockController {
         stockService.updateStock(stock);
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(StockNotExistsException.class)
-    void stockNotFound() {}
+    ResponseEntity<Object> stockNotFound(StockNotExistsException exception) {
+            return ResponseMessage.createResponseEntity(exception,HttpStatus.NOT_FOUND);
+    }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(StockCodeOutsideEnumException.class)
-    void stocCodekOutsideEnum() {}
+    ResponseEntity<Object> stocCodekOutsideEnum(StockCodeOutsideEnumException exception) {
+        return ResponseMessage.createResponseEntity(exception,HttpStatus.BAD_REQUEST);
+    }
 
-    @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(StockAlreadyExistsException.class)
-    void stockExists() {}
+    ResponseEntity<Object> stockExists(StockAlreadyExistsException exception) {
+        return ResponseMessage.createResponseEntity(exception,HttpStatus.CONFLICT);
+    }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(StockException.class)
-    void unhandledStockError() {}
+    ResponseEntity<Object> unhandledStockError(StockException exception) {
+        return ResponseMessage.createResponseEntity(exception,HttpStatus.BAD_REQUEST);
+    }
 }

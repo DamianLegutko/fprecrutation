@@ -3,7 +3,6 @@ package pl.damianlegutko.fprecrutation.user;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import pl.damianlegutko.fprecrutation.user.api.UserDTO;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserAlreadyExistsException;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserHaveNotEnoughMoneyException;
@@ -11,6 +10,7 @@ import pl.damianlegutko.fprecrutation.user.exceptions.UserNotExistsException;
 
 import java.math.BigDecimal;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Service("user2service")
@@ -19,51 +19,41 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @SneakyThrows
-    @Transactional(readOnly = true)
     public UserDTO findUserByUsername(String userName) {
         User user = userRepository.findByUsername(userName);
 
-        if (nonNull(user)) {
-            return mapUserToDto(user);
-        }
+        if (isNull(user)) throw new UserNotExistsException(userName);
 
-        throw new UserNotExistsException();
+        return mapUserToDto(user);
     }
 
     @SneakyThrows
-    @Transactional
     public void saveUser(UserDTO user) {
-        if(nonNull(userRepository.findByUsername(user.getUsername()))) throw new UserAlreadyExistsException();
+        if (nonNull(userRepository.findByUsername(user.getUsername()))) throw new UserAlreadyExistsException(user.getUsername());
 
         userRepository.save(mapDtoToUser(user));
     }
 
     @SneakyThrows
-    @Transactional
     public void giveMoneyToUser(String userName, BigDecimal moneyAmount) {
         User user = userRepository.findByUsername(userName);
 
-        if (nonNull(user)) {
-            user.setMoney(user.getMoney().add(moneyAmount));
+        if (isNull(user)) throw new UserNotExistsException(userName);
 
-            userRepository.save(user);
-        }
-        else throw new UserNotExistsException();
+        user.setMoney(user.getMoney().add(moneyAmount));
+        userRepository.save(user);
     }
 
     @SneakyThrows
-    @Transactional
     public void takeMoneyFromUser(String userName, BigDecimal moneyAmount) {
         User user = userRepository.findByUsername(userName);
 
-        if (nonNull(user)) {
-            if (user.getMoney().compareTo(moneyAmount) < 0) throw new UserHaveNotEnoughMoneyException();
+        if (isNull(user)) throw new UserNotExistsException(userName);
 
-            user.setMoney(user.getMoney().subtract(moneyAmount));
+        if (user.getMoney().compareTo(moneyAmount) < 0) throw new UserHaveNotEnoughMoneyException(userName, user.getMoney());
 
-            userRepository.save(user);
-        }
-        else throw new UserNotExistsException();
+        user.setMoney(user.getMoney().subtract(moneyAmount));
+        userRepository.save(user);
     }
 
     private User mapDtoToUser(UserDTO user) {

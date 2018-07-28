@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.damianlegutko.fprecrutation.exchange.Company;
 import pl.damianlegutko.fprecrutation.exchange.stock.api.StockDTO;
 import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockAlreadyExistsException;
+import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockCodeOutsideEnumException;
 import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockNotExistsException;
 
 import javax.annotation.PostConstruct;
@@ -19,34 +20,32 @@ public class StockServiceImpl implements StockService {
     private final StockRepository stockRepository;
 
     @SneakyThrows
-    @Transactional(readOnly = true)
     public StockDTO findStockByCompany(String companyCode) {
         try {
-            Company company = Company.valueOf(companyCode);
-            Stock stock = stockRepository.findByCompany(company);
+            Stock stock = stockRepository.findByCompany(Company.valueOf(companyCode));
 
             if (nonNull(stock)) {
                 return mapStockToDto(stock);
             }
             else {
-                throw new StockNotExistsException();
+                throw new StockNotExistsException(companyCode);
             }
         }
         catch (IllegalArgumentException enumValueNotFound) {
-            throw new StockNotExistsException();
+            throw new StockCodeOutsideEnumException(companyCode);
         }
     }
 
     @SneakyThrows
-    @Transactional
     public void saveStock(StockDTO stock) {
-        if(nonNull(stockRepository.findByCompany(stock.getCompany()))) throw new StockAlreadyExistsException();
+        if (nonNull(stockRepository.findByCompany(stock.getCompany()))) throw new StockAlreadyExistsException(stock.getCompany().getCompanyName());
+
+        stock.setCompanyCode(stock.getCompanyCode().toUpperCase());
 
         updateStock(stock);
     }
 
     @SneakyThrows
-    @Transactional
     public void updateStock(StockDTO stock) {
         stockRepository.save(mapDtoToStock(stock));
     }

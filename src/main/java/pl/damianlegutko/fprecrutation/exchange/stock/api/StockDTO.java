@@ -5,8 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.damianlegutko.fprecrutation.exchange.Company;
-import pl.damianlegutko.fprecrutation.exchange.asset.exceptions.UserHaveNotEnoughStocksException;
 import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockCodeOutsideEnumException;
+import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockHaveNotEnoughStocksException;
 
 @Data
 @AllArgsConstructor
@@ -17,15 +17,17 @@ public class StockDTO {
     private Long stockAmount;
 
     public Company getCompany() throws StockCodeOutsideEnumException {
-        return Company.parseStockCode(companyCode);
+        return Company.parseCompanyCode(companyCode);
     }
 
     public void increaseStockAmount(Long increaseByValue){
         this.stockAmount = Long.sum(this.stockAmount, increaseByValue);
     }
 
-    public void decreaseStockAmount(Long decreaseByValue) throws UserHaveNotEnoughStocksException {
-        if (this.stockAmount.compareTo(decreaseByValue) < 0) throw new UserHaveNotEnoughStocksException();
+    public void decreaseStockAmount(Long decreaseByValue) throws StockHaveNotEnoughStocksException, StockCodeOutsideEnumException {
+        if (this.stockAmount.compareTo(decreaseByValue) < 0) {
+            throw new StockHaveNotEnoughStocksException(this.stockAmount, getCompany().getCompanyName(),  decreaseByValue);
+        }
 
         this.stockAmount -= decreaseByValue;
     }

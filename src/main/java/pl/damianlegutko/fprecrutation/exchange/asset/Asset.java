@@ -39,7 +39,7 @@ class Asset {
     }
 
     public void decreaseStockAmount(Long decreaseByValue) throws UserHaveNotEnoughStocksException {
-        if (this.stockAmount.compareTo(decreaseByValue) < 0) throw new UserHaveNotEnoughStocksException();
+        if (this.stockAmount.compareTo(decreaseByValue) < 0) throw new UserHaveNotEnoughStocksException(decreaseByValue, stockAmount);
 
         this.stockAmount -= decreaseByValue;
     }

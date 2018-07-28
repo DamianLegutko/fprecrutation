@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.damianlegutko.fprecrutation.Messages;
 
 @Service("userDetailsService")
 class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
@@ -16,9 +17,7 @@ class UserDetailsService implements org.springframework.security.core.userdetail
     public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findByUsername(username);
 
-        if (user == null) {
-            throw new UsernameNotFoundException(username);
-        }
+        if (user == null) throw new UsernameNotFoundException(Messages.get("user.exp.notFound", username));
 
         return new MyUserPrincipal(user);
     }

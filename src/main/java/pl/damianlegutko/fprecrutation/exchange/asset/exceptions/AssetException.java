@@ -1,3 +1,10 @@
 package pl.damianlegutko.fprecrutation.exchange.asset.exceptions;
 
-public class AssetException extends Throwable {}
+import pl.damianlegutko.fprecrutation.BaseException;
+
+public class AssetException extends BaseException {
+
+    public AssetException(String errorMessage) {
+        super(errorMessage);
+    }
+}

@@ -1,3 +1,9 @@
 package pl.damianlegutko.fprecrutation.user.exceptions;
 
-public class UserException extends Throwable {}
+import pl.damianlegutko.fprecrutation.BaseException;
+
+public class UserException extends BaseException {
+    public UserException(String errorMessage) {
+        super(errorMessage);
+    }
+}

@@ -23,6 +23,6 @@ public class AssetDTO {
     String userName;
 
     public Company getCompany() throws StockCodeOutsideEnumException {
-        return Company.parseStockCode(companyCode);
+        return Company.parseCompanyCode(companyCode);
     }
 }

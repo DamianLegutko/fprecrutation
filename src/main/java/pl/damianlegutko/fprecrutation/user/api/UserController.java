@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.damianlegutko.fprecrutation.ResponseMessage;
 import pl.damianlegutko.fprecrutation.user.UserService;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserAlreadyExistsException;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserException;
@@ -17,53 +18,57 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 class UserController {
 
-    private final UserService user2service;
+    private final UserService userService;
 
     @GetMapping("/get/{userName}")
     ResponseEntity getUser(@PathVariable String userName) {
-       UserDTO userDTO = user2service.findUserByUsername(userName);
+       UserDTO userDTO = userService.findUserByUsername(userName);
        return new ResponseEntity(userDTO, HttpStatus.OK);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/registration")
     void registration(@RequestBody UserDTO user) {
-        user2service.saveUser(user);
+        userService.saveUser(user);
     }
 
     @PostMapping("/signin")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void signin(@RequestBody UserDTO user) {
-        user2service.findUserByUsername(user.getUsername());
+        userService.findUserByUsername(user.getUsername());
     }
 
     //TODO temporary REST
     @PostMapping("/addCash/{userName}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void increaseUserCash(@PathVariable String userName, @RequestParam BigDecimal amount) {
-        user2service.giveMoneyToUser(userName, amount);
+        userService.giveMoneyToUser(userName, amount);
     }
 
     //TODO temporary REST
     @PostMapping("/subtractCash/{userName}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void decreaseUserCash(@PathVariable String userName, @RequestParam BigDecimal amount) {
-        user2service.takeMoneyFromUser(userName, amount);
+        userService.takeMoneyFromUser(userName, amount);
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UserNotExistsException.class)
-    void userNotFound() {}
+    ResponseEntity<Object> userNotFound(UserNotExistsException exception) {
+        return new ResponseEntity<>(ResponseMessage.createResponseMessageFromBaseException(exception),HttpStatus.NOT_FOUND);
+    }
 
-    @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(UserAlreadyExistsException.class)
-    void userExists() {}
+    ResponseEntity<Object> userExists(UserAlreadyExistsException exception) {
+        return new ResponseEntity<>(ResponseMessage.createResponseMessageFromBaseException(exception),HttpStatus.CONFLICT);
+    }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserHaveNotEnoughMoneyException.class)
-    void userHaveNotEnaughMoney() {}
+    ResponseEntity<Object> userHaveNotEnaughMoney(UserHaveNotEnoughMoneyException exception) {
+        return new ResponseEntity<>(ResponseMessage.createResponseMessageFromBaseException(exception),HttpStatus.BAD_REQUEST);
+    }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserException.class)
-    void unhandledUserError() {}
+    ResponseEntity<Object> unhandledUserError(UserException exception) {
+        return new ResponseEntity<>(ResponseMessage.createResponseMessageFromBaseException(exception),HttpStatus.BAD_REQUEST);
+    }
 }

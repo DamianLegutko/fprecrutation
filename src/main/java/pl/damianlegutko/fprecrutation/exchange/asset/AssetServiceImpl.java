@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.damianlegutko.fprecrutation.exchange.asset.api.AssetDTO;
+import pl.damianlegutko.fprecrutation.exchange.asset.exceptions.UserHaveNotEnoughStocksException;
 import pl.damianlegutko.fprecrutation.exchange.stock.StockService;
 import pl.damianlegutko.fprecrutation.exchange.stock.api.StockDTO;
 import pl.damianlegutko.fprecrutation.user.UserService;
@@ -22,7 +23,7 @@ public class AssetServiceImpl implements AssetService {
     private final UserService userService;
 
     @SneakyThrows
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public void buyAssetByUser(AssetDTO assetDTO) {
 
         //region subtract money from user wallet
@@ -40,21 +41,21 @@ public class AssetServiceImpl implements AssetService {
         //region add stocks to user wallet
         Asset asset = assetRepository.findByUserNameAndCompany(assetDTO.getUserName(), assetDTO.getCompany());
 
-        if(isNull(asset)) asset = mapDtoToAsset(assetDTO);
-        else              asset.increaseStockAmount(assetDTO.getStockAmount());
+        if (isNull(asset)) asset = mapDtoToAsset(assetDTO);
+        else asset.increaseStockAmount(assetDTO.getStockAmount());
 
         assetRepository.save(asset);
         //endregion
     }
 
     @SneakyThrows
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public void sellAssetByUser(AssetDTO assetDTO) {
 
         //region add money to user wallet
         UserDTO userDTO = userService.findUserByUsername(assetDTO.getUserName());
         BigDecimal totalStocksCost = assetDTO.getStockPrice().multiply(new BigDecimal(assetDTO.getStockAmount()));
-        userService.takeMoneyFromUser(userDTO.getUsername(), totalStocksCost);
+        userService.giveMoneyToUser(userDTO.getUsername(), totalStocksCost);
         //endregion
 
         //region add stocks to stock exchange
@@ -65,6 +66,12 @@ public class AssetServiceImpl implements AssetService {
 
         //region subtract stocks from user wallet
         Asset asset = assetRepository.findByUserNameAndCompany(assetDTO.getUserName(), assetDTO.getCompany());
+
+        if (isNull(asset))
+            throw new UserHaveNotEnoughStocksException(stockDTO.getCompany().getCompanyName());
+        if (asset.getStockAmount().compareTo(assetDTO.getStockAmount()) < 0)
+            throw new UserHaveNotEnoughStocksException(stockDTO.getCompany().getCompanyName(), assetDTO.getStockAmount(), asset.getStockAmount());
+
         asset.decreaseStockAmount(assetDTO.getStockAmount());
         assetRepository.save(asset);
         //endregion
