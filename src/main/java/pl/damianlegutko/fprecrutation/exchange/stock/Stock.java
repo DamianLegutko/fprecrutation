@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import pl.damianlegutko.fprecrutation.exchange.Company;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 
 @Entity
 @Table(name = "STOCKS")
@@ -22,5 +23,6 @@ class Stock {
     private Company company;
 
     @Column(nullable = false)
+    @Min(0)
     private Long stockAmount;
 }

@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-@Service("user2service")
+@Service("serviceForUsers")
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;

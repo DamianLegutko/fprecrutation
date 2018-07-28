@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
 @Entity
@@ -19,12 +21,14 @@ import java.math.BigDecimal;
 @Builder
 class User {
     @Id
+    @Size(min = 3)
     @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
     private String password;
 
+    @Min(0)
     @Column(nullable = false)
     private BigDecimal money;
 }
