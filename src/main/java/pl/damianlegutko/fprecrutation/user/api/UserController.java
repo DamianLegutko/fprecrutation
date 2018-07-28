@@ -4,13 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.damianlegutko.fprecrutation.ResponseMessage;
+import pl.damianlegutko.fprecrutation.commonExceptions.EmptyFieldException;
+import pl.damianlegutko.fprecrutation.responses.ExceptionMessage;
+import pl.damianlegutko.fprecrutation.responses.ValidationMessage;
 import pl.damianlegutko.fprecrutation.user.UserService;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserAlreadyExistsException;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserException;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserHaveNotEnoughMoneyException;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserNotExistsException;
 
+import javax.validation.ValidationException;
 import java.math.BigDecimal;
 
 @RestController
@@ -53,22 +56,32 @@ class UserController {
     }
 
     @ExceptionHandler(UserNotExistsException.class)
-    ResponseEntity<Object> userNotFound(UserNotExistsException exception) {
-        return new ResponseEntity<>(ResponseMessage.createResponseMessageFromBaseException(exception),HttpStatus.NOT_FOUND);
+    ResponseEntity userNotFound(UserNotExistsException exception) {
+        return ExceptionMessage.createResponseEntity(exception,HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    ResponseEntity<Object> userExists(UserAlreadyExistsException exception) {
-        return new ResponseEntity<>(ResponseMessage.createResponseMessageFromBaseException(exception),HttpStatus.CONFLICT);
+    ResponseEntity userExists(UserAlreadyExistsException exception) {
+        return ExceptionMessage.createResponseEntity(exception,HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(UserHaveNotEnoughMoneyException.class)
-    ResponseEntity<Object> userHaveNotEnaughMoney(UserHaveNotEnoughMoneyException exception) {
-        return new ResponseEntity<>(ResponseMessage.createResponseMessageFromBaseException(exception),HttpStatus.BAD_REQUEST);
+    ResponseEntity userHaveNotEnaughMoney(UserHaveNotEnoughMoneyException exception) {
+        return ExceptionMessage.createResponseEntity(exception,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EmptyFieldException.class)
+    ResponseEntity stockHaveNotEnoughStocks(EmptyFieldException exception) {
+        return ExceptionMessage.createResponseEntity(exception,HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UserException.class)
-    ResponseEntity<Object> unhandledUserError(UserException exception) {
-        return new ResponseEntity<>(ResponseMessage.createResponseMessageFromBaseException(exception),HttpStatus.BAD_REQUEST);
+    ResponseEntity unhandledUserError(UserException exception) {
+        return ExceptionMessage.createResponseEntity(exception,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    ResponseEntity handleValidation(ValidationException exception) {
+        return ValidationMessage.createResponseEntity(exception,HttpStatus.BAD_REQUEST);
     }
 }

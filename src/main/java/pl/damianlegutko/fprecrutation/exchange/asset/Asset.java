@@ -8,7 +8,8 @@ import pl.damianlegutko.fprecrutation.exchange.Company;
 import pl.damianlegutko.fprecrutation.exchange.asset.exceptions.UserHaveNotEnoughStocksException;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -30,11 +31,13 @@ class Asset {
     @Enumerated(EnumType.STRING)
     private Company company;
 
-    @Min(0)
+    @NotNull
+    @PositiveOrZero
     @Column(nullable = false)
     private Long stockAmount;
 
-    @Size(min = 3)
+    @NotNull
+    @Size(min = 3, max = 256)
     @Column(nullable = false)
     private String userName;
 

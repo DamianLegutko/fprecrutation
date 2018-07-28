@@ -2,11 +2,17 @@ package pl.damianlegutko.fprecrutation.user;
 
 import pl.damianlegutko.fprecrutation.user.api.UserDTO;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
 public interface UserService {
-    UserDTO findUserByUsername(String username);
+    UserDTO findUserByUsername(@NotBlank @Size(min = 3, max = 256) String username);
     void saveUser(UserDTO user);
-    void giveMoneyToUser(String userName, BigDecimal moneyAmount);
-    void takeMoneyFromUser(String userName, BigDecimal moneyAmount);
+    void giveMoneyToUser(@Size(min = 3, max = 256) String userName,
+                         @NotNull @Positive BigDecimal moneyAmount);
+    void takeMoneyFromUser(@Size(min = 3, max = 256) String userName,
+                           @NotNull @Positive BigDecimal moneyAmount);
 }

@@ -1,6 +1,6 @@
 package pl.damianlegutko.fprecrutation.exchange.stock.exceptions;
 
-import pl.damianlegutko.fprecrutation.BaseException;
+import pl.damianlegutko.fprecrutation.commonExceptions.BaseException;
 
 public class StockException extends BaseException {
     

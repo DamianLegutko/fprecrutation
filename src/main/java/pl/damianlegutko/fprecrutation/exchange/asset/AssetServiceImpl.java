@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import pl.damianlegutko.fprecrutation.exchange.asset.api.AssetDTO;
 import pl.damianlegutko.fprecrutation.exchange.asset.exceptions.UserHaveNotEnoughStocksException;
 import pl.damianlegutko.fprecrutation.exchange.stock.StockService;
@@ -17,6 +18,7 @@ import static java.util.Objects.isNull;
 
 @Service("assetService")
 @AllArgsConstructor
+@Validated
 public class AssetServiceImpl implements AssetService {
     private final AssetRepository assetRepository;
     private final StockService stockService;
@@ -25,6 +27,7 @@ public class AssetServiceImpl implements AssetService {
     @SneakyThrows
     @Transactional(rollbackFor = Throwable.class)
     public void buyAssetByUser(AssetDTO assetDTO) {
+        assetDTO.validateAllFields();
 
         //region subtract money from user wallet
         UserDTO userDTO = userService.findUserByUsername(assetDTO.getUserName());
@@ -51,6 +54,7 @@ public class AssetServiceImpl implements AssetService {
     @SneakyThrows
     @Transactional(rollbackFor = Throwable.class)
     public void sellAssetByUser(AssetDTO assetDTO) {
+        assetDTO.validateAllFields();
 
         //region add money to user wallet
         UserDTO userDTO = userService.findUserByUsername(assetDTO.getUserName());
@@ -78,11 +82,13 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @SneakyThrows
-    private Asset mapDtoToAsset(AssetDTO asset) {
+    private Asset mapDtoToAsset(AssetDTO assetDTO) {
+        assetDTO.validateAllFields();
+
         return Asset.builder()
-                .company(asset.getCompany())
-                .userName(asset.getUserName())
-                .stockAmount(asset.getStockAmount())
+                .company(assetDTO.getCompany())
+                .userName(assetDTO.getUserName())
+                .stockAmount(assetDTO.getStockAmount())
                 .build();
     }
 }

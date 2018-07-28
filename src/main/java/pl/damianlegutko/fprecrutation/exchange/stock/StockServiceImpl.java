@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+import pl.damianlegutko.fprecrutation.Validators;
 import pl.damianlegutko.fprecrutation.exchange.Company;
 import pl.damianlegutko.fprecrutation.exchange.stock.api.StockDTO;
 import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockAlreadyExistsException;
@@ -16,11 +18,14 @@ import static java.util.Objects.nonNull;
 
 @Service("stockService")
 @AllArgsConstructor
+@Validated
 public class StockServiceImpl implements StockService {
     private final StockRepository stockRepository;
 
     @SneakyThrows
     public StockDTO findStockByCompany(String companyCode) {
+        Validators.objectIsNotNull(companyCode, "companyCode");
+
         try {
             Stock stock = stockRepository.findByCompany(Company.valueOf(companyCode));
 
@@ -38,6 +43,8 @@ public class StockServiceImpl implements StockService {
 
     @SneakyThrows
     public void saveStock(StockDTO stock) {
+        stock.validateAllFields();
+
         if (nonNull(stockRepository.findByCompany(stock.getCompany()))) throw new StockAlreadyExistsException(stock.getCompany().getCompanyName());
 
         stock.setCompanyCode(stock.getCompanyCode().toUpperCase());
@@ -47,6 +54,8 @@ public class StockServiceImpl implements StockService {
 
     @SneakyThrows
     public void updateStock(StockDTO stock) {
+        stock.validateAllFields();
+
         stockRepository.save(mapDtoToStock(stock));
     }
 
@@ -66,6 +75,8 @@ public class StockServiceImpl implements StockService {
 
     @SneakyThrows
     private Stock mapDtoToStock(StockDTO stock) {
+        stock.validateAllFields();
+
         return Stock.builder()
                 .company(stock.getCompany())
                 .stockAmount(stock.getStockAmount())

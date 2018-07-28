@@ -1,4 +1,4 @@
-package pl.damianlegutko.fprecrutation;
+package pl.damianlegutko.fprecrutation.commonExceptions;
 
 import lombok.Getter;
 
@@ -14,6 +14,7 @@ public class BaseException extends Exception {
         STOCK_NOT_EXISTS,
         STOCK_CODE_OUTSIDE_ENUM,
         STOCK_HAVE_NOT_ENOUGH_STOCKS,
+        EMPTY_FIELD
     }
 
     protected ErrorCode errorCode = ErrorCode.NON_BUSINESS_LOGIC;

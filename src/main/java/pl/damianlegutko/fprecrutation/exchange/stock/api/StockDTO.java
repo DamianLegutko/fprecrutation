@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.damianlegutko.fprecrutation.Validators;
+import pl.damianlegutko.fprecrutation.commonExceptions.EmptyFieldException;
 import pl.damianlegutko.fprecrutation.exchange.Company;
 import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockCodeOutsideEnumException;
 import pl.damianlegutko.fprecrutation.exchange.stock.exceptions.StockHaveNotEnoughStocksException;
@@ -30,5 +32,10 @@ public class StockDTO {
         }
 
         this.stockAmount -= decreaseByValue;
+    }
+
+    public void validateAllFields() throws EmptyFieldException {
+        Validators.objectIsNotNull(companyCode, "companyCode");
+        Validators.objectIsNotNull(stockAmount, "stockAmount");
     }
 }
