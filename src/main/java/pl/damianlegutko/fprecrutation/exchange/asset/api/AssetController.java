@@ -37,6 +37,11 @@ class AssetController {
         assetService.sellAssetByUser(asset);
     }
 
+    @GetMapping("/get/userAssets/{userName}")
+    ResponseEntity getUserAssets(@PathVariable String userName) {
+        return new ResponseEntity(assetService.getUserAssetsByUserName(userName), HttpStatus.OK);
+    }
+
     @ExceptionHandler(UserNotExistsException.class)
     ResponseEntity userNotFound(UserNotExistsException exception) {
         return ExceptionMessage.createResponseEntity(exception,HttpStatus.BAD_REQUEST);

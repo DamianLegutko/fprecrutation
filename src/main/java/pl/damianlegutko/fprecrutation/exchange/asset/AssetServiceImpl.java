@@ -5,7 +5,10 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import pl.damianlegutko.fprecrutation.Validators;
 import pl.damianlegutko.fprecrutation.exchange.asset.api.AssetDTO;
+import pl.damianlegutko.fprecrutation.exchange.asset.api.UserAssetsDTO;
+import pl.damianlegutko.fprecrutation.exchange.asset.api.UserStock;
 import pl.damianlegutko.fprecrutation.exchange.asset.exceptions.UserHaveNotEnoughStocksException;
 import pl.damianlegutko.fprecrutation.exchange.stock.StockService;
 import pl.damianlegutko.fprecrutation.exchange.stock.api.StockDTO;
@@ -13,6 +16,7 @@ import pl.damianlegutko.fprecrutation.user.UserService;
 import pl.damianlegutko.fprecrutation.user.api.UserDTO;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import static java.util.Objects.isNull;
 
@@ -82,6 +86,26 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @SneakyThrows
+    public UserAssetsDTO getUserAssetsByUserName(String userName) {
+        Validators.objectIsNotNull(userName, "userName");
+
+        //region get money amount from user
+        UserDTO userDTO = userService.findUserByUsername(userName);
+        //endregion
+
+        //region get all stocks belong to user
+        ArrayList<Asset> assetWallet = assetRepository.findAllByUserName(userName);
+        //end
+
+        UserAssetsDTO userAssetsDTO =  UserAssetsDTO.builder()
+                .money(userDTO.getMoney())
+                .assetWallet(mapAssetListToUserStocks(assetWallet))
+                .build();
+
+        return userAssetsDTO;
+    }
+
+    @SneakyThrows
     private Asset mapDtoToAsset(AssetDTO assetDTO) {
         assetDTO.validateAllFields();
 
@@ -90,5 +114,23 @@ public class AssetServiceImpl implements AssetService {
                 .userName(assetDTO.getUserName())
                 .stockAmount(assetDTO.getStockAmount())
                 .build();
+    }
+
+    @SneakyThrows
+    private AssetDTO mapAssetToDto(Asset asset) {
+        return AssetDTO.builder()
+                .companyCode(asset.getCompany().toString())
+                .userName(asset.getUserName())
+                .stockAmount(asset.getStockAmount())
+                .build();
+    }
+
+    @SneakyThrows
+    private ArrayList<UserStock> mapAssetListToUserStocks(ArrayList<Asset> assets) {
+        ArrayList<UserStock> userStocks = new ArrayList<>();
+
+        for (Asset asset : assets) userStocks.add(new UserStock(asset.getCompany().toString(), asset.getStockAmount()));
+
+        return userStocks;
     }
 }

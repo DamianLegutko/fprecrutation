@@ -36,9 +36,15 @@ class UserController {
     }
 
     @PostMapping("/signin")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     void signin(@RequestBody UserDTO user) {
         userService.findUserByUsername(user.getUsername());
+    }
+
+    @GetMapping("/logout")
+    @ResponseStatus(HttpStatus.OK)
+    void signin() {
+        //TODO
     }
 
     //TODO temporary REST
