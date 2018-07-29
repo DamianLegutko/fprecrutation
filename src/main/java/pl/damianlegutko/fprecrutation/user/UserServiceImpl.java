@@ -44,7 +44,8 @@ public class UserServiceImpl implements UserService {
 
         if (nonNull(userRepository.findByUsername(user.getUsername()))) throw new UserAlreadyExistsException(user.getUsername());
 
-        userRepository.save(mapDtoToUser(user));
+        User user1 = mapDtoToUser(user);
+        userRepository.save(user1);
     }
 
     @SneakyThrows

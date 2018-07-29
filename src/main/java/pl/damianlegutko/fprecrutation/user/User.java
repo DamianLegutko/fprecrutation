@@ -6,9 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Set;
 
@@ -21,17 +19,18 @@ import java.util.Set;
 class User {
     @Id
     @NotNull
-    @Size(min = 3, max = 256)
+    @Size(min = 3, max = 40)
     @Column(nullable = false, unique = true)
     private String username;
 
     @NotNull
-    @Size(min = 8, max = 256)
+    @Size(min = 8, max = 255)//more because of password encryption
     @Column(nullable = false)
     private String password;
 
     @NotNull
-    @PositiveOrZero
+    @Min(0)
+    @Max(999999999)
     @Column(nullable = false)
     private BigDecimal money;
 

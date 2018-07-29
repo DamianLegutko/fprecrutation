@@ -41,7 +41,6 @@ class UserController {
     @PostMapping("/signin")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void signin(@RequestBody UserDTO user) {
-        userService.findUserByUsername(user.getUsername());
         securityService.signin(user.getUsername(), user.getPassword());
     }
 

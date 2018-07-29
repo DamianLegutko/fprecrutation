@@ -37,7 +37,7 @@ class Asset {
     private Long stockAmount;
 
     @NotNull
-    @Size(min = 3, max = 256)
+    @Size(min = 3, max = 40)
     @Column(nullable = false)
     private String userName;
 
