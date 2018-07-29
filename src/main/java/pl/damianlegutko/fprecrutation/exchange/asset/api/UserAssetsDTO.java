@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -14,5 +14,5 @@ import java.util.ArrayList;
 @Builder
 public class UserAssetsDTO {
     BigDecimal money;
-    ArrayList<UserStock> assetWallet;
+    List<UserStock> assetWallet;
 }

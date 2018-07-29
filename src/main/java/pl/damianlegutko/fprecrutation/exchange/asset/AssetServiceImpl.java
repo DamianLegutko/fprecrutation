@@ -17,7 +17,9 @@ import pl.damianlegutko.fprecrutation.user.api.UserDTO;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.isNull;
 
 @Service("assetService")
@@ -126,8 +128,8 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @SneakyThrows
-    private ArrayList<UserStock> mapAssetListToUserStocks(ArrayList<Asset> assets) {
-        ArrayList<UserStock> userStocks = new ArrayList<>();
+    private List<UserStock> mapAssetListToUserStocks(List<Asset> assets) {
+        List<UserStock> userStocks = newArrayList();
 
         for (Asset asset : assets) userStocks.add(new UserStock(asset.getCompany().toString(), asset.getStockAmount()));
 
