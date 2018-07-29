@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
 
         return User.builder()
                 .password(bCryptPasswordEncoder.encode(user.getPassword()))
-                .username(user.getUsername())
+                .username(user.getUsername().toLowerCase())
                 .money(user.getMoney())
                 .roles(newHashSet(roleRepository.findAll()))
                 .build();
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
 
     private UserDTO mapUserToDto(User user) {
         return UserDTO.builder()
-                .username(user.getUsername())
+                .username(user.getUsername().toLowerCase())
                 .money(user.getMoney())
                 .build();
     }
