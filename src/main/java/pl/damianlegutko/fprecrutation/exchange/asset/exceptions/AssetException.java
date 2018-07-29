@@ -4,7 +4,7 @@ import pl.damianlegutko.fprecrutation.commonExceptions.BaseException;
 
 public class AssetException extends BaseException {
 
-    public AssetException(String errorMessage) {
+    AssetException(String errorMessage) {
         super(errorMessage);
     }
 }

@@ -41,11 +41,11 @@ class Asset {
     @Column(nullable = false)
     private String userName;
 
-    public void increaseStockAmount(Long increaseByValue){
+    void increaseStockAmount(Long increaseByValue){
         this.stockAmount = Long.sum(this.stockAmount, increaseByValue);
     }
 
-    public void decreaseStockAmount(Long decreaseByValue) throws UserHaveNotEnoughStocksException {
+    void decreaseStockAmount(Long decreaseByValue) throws UserHaveNotEnoughStocksException {
         if (this.stockAmount.compareTo(decreaseByValue) < 0) throw new UserHaveNotEnoughStocksException(decreaseByValue, stockAmount);
 
         this.stockAmount -= decreaseByValue;

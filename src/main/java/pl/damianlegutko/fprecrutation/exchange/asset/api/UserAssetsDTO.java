@@ -13,6 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class UserAssetsDTO {
-    BigDecimal money;
-    List<UserStock> assetWallet;
+    private BigDecimal money;
+    private List<UserStock> assetWallet;
 }

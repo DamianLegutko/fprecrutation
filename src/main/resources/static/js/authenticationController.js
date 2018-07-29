@@ -40,6 +40,7 @@ angular.module('authenticationController', [])
             $scope.user = {
                 username: '',
                 password: '',
+                confirmPassword: '',
                 money: ''
             };
             $scope.errorMessage = '';

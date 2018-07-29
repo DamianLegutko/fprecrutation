@@ -1,6 +1,6 @@
 var fprecrutation = angular.module('fprecrutation', ['ngRoute', 'authenticationController', 'assetController']);
 
-fprecrutation.service('WebsocketService', function($rootScope, $log) {
+fprecrutation.service('WebsocketService', function($rootScope) {
     var service = this;
     service.ws = new WebSocket("ws://webtask.future-processing.com:8068/ws/stocks");
 
@@ -23,6 +23,21 @@ fprecrutation.service('WebsocketService', function($rootScope, $log) {
 
     return service;
 });
+
+fprecrutation.directive('ngConfirmClick', [
+    function(){
+        return {
+            link: function (scope, element, attr) {
+                var msg = attr.ngConfirmClick || "Are you sure?";
+                var clickAction = attr.confirmedClick;
+                element.bind('click',function (event) {
+                    if ( window.confirm(msg) ) {
+                        scope.$eval(clickAction)
+                    }
+                });
+            }
+        };
+    }]);
 
 fprecrutation.config(['$routeProvider',
     function($routeProvider) {

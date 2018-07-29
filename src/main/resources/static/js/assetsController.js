@@ -1,7 +1,7 @@
 angular.module('assetController', [])
 
-    .controller('assetsController', ['$scope', '$rootScope', '$http', 'WebsocketService', '$log',
-        function($scope, $rootScope, $http, WebsocketService, $log) {
+    .controller('assetsController', ['$scope', '$rootScope', '$http', 'WebsocketService',
+        function($scope, $rootScope, $http, WebsocketService) {
             $scope.errorMessage = '';
             userAssets();
 
@@ -47,12 +47,12 @@ angular.module('assetController', [])
                         $rootScope.user.assetWallet = response.data.assetWallet;
                         angular.forEach($rootScope.user.assetWallet, function(asset) {
                             var stockPrice = $rootScope.stockPricesMap.get(asset.companyCode).price;
-                            asset.stockPrice = stockPrice;
-                            asset.value = stockPrice * asset.stockAmount;
+                            asset.stockPrice = parseFloat(stockPrice).toFixed(4);
+                            asset.value = parseFloat(stockPrice * asset.stockAmount).toFixed(4);
                         });
-                        $rootScope.user.money = response.data.money;
+                        $rootScope.user.money = parseFloat(response.data.money).toFixed(4);
                     }).catch(function errorCallback(response) {
-                        $scope.errorMessage = 'err'; //response.data.message;
+                        $scope.errorMessage = 'Problem with getting user assets';
                     })
             }
         }

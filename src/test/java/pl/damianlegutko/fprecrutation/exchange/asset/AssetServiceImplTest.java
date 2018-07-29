@@ -62,6 +62,7 @@ public class AssetServiceImplTest {
                 .money(START_WALLET)
                 .username(testUser)
                 .password(USER_PASSWORD)
+                .confirmPassword(USER_PASSWORD)
                 .build();
 
         userService.saveUser(userDTO);

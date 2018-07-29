@@ -14,7 +14,7 @@ public class BaseException extends Exception {
         STOCK_NOT_EXISTS,
         STOCK_CODE_OUTSIDE_ENUM,
         STOCK_HAVE_NOT_ENOUGH_STOCKS,
-        EMPTY_FIELD
+        PASSWORD_NOT_MATCH, EMPTY_FIELD
     }
 
     protected ErrorCode errorCode = ErrorCode.NON_BUSINESS_LOGIC;

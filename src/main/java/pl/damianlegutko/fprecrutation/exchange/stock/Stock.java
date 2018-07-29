@@ -1,6 +1,5 @@
 package pl.damianlegutko.fprecrutation.exchange.stock;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

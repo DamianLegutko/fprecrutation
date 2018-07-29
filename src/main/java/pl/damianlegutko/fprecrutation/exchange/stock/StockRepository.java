@@ -5,5 +5,4 @@ import pl.damianlegutko.fprecrutation.exchange.Company;
 
 interface StockRepository extends CrudRepository<Stock, Long> {
     Stock findByCompany(Company company);
-    boolean existsByCompany(Company company);
 }

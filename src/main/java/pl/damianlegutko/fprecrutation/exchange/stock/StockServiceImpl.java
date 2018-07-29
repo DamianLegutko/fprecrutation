@@ -16,10 +16,11 @@ import javax.annotation.PostConstruct;
 
 import static java.util.Objects.nonNull;
 
-@Service("stockService")
+@Service
 @AllArgsConstructor
 @Validated
 public class StockServiceImpl implements StockService {
+    private static final long INIT_STOCK_AMOUNT = 10000L;
     private final StockRepository stockRepository;
 
     @SneakyThrows
@@ -64,7 +65,7 @@ public class StockServiceImpl implements StockService {
     @Transactional
     public void initializeStock() {
         Stock stock = Stock.builder()
-                        .stockAmount(10000L)
+                        .stockAmount(INIT_STOCK_AMOUNT)
                         .build();
 
         for(Company company : Company.values()) {

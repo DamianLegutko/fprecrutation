@@ -16,13 +16,13 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 public class AssetDTO {
-    String companyCode;
+    private String companyCode;
 
-    Long stockAmount;
+    private Long stockAmount;
 
-    BigDecimal stockPrice;
+    private BigDecimal stockPrice;
 
-    String userName;
+    private String userName;
 
     public Company getCompany() throws StockCodeOutsideEnumException {
         return Company.parseCompanyCode(companyCode);

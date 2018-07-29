@@ -9,10 +9,7 @@ import pl.damianlegutko.fprecrutation.responses.ExceptionMessage;
 import pl.damianlegutko.fprecrutation.responses.ValidationMessage;
 import pl.damianlegutko.fprecrutation.user.SecurityService;
 import pl.damianlegutko.fprecrutation.user.UserService;
-import pl.damianlegutko.fprecrutation.user.exceptions.UserAlreadyExistsException;
-import pl.damianlegutko.fprecrutation.user.exceptions.UserException;
-import pl.damianlegutko.fprecrutation.user.exceptions.UserHaveNotEnoughMoneyException;
-import pl.damianlegutko.fprecrutation.user.exceptions.UserNotExistsException;
+import pl.damianlegutko.fprecrutation.user.exceptions.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,6 +64,11 @@ class UserController {
 
     @ExceptionHandler(EmptyFieldException.class)
     ResponseEntity stockHaveNotEnoughStocks(EmptyFieldException exception) {
+        return ExceptionMessage.createResponseEntity(exception,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PasswordNotMatchException.class)
+    ResponseEntity unhandledPasswordNotMatch(PasswordNotMatchException exception) {
         return ExceptionMessage.createResponseEntity(exception,HttpStatus.BAD_REQUEST);
     }
 

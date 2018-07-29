@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 
 import javax.validation.ValidationException;
 
-
 public class ValidationMessage {
     private String message;
     private String title;

@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import pl.damianlegutko.fprecrutation.Validators;
 import pl.damianlegutko.fprecrutation.commonExceptions.EmptyFieldException;
 import pl.damianlegutko.fprecrutation.user.api.UserDTO;
+import pl.damianlegutko.fprecrutation.user.exceptions.PasswordNotMatchException;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserAlreadyExistsException;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserHaveNotEnoughMoneyException;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserNotExistsException;
@@ -76,7 +77,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    private User mapDtoToUser(UserDTO user) throws EmptyFieldException {
+    private User mapDtoToUser(UserDTO user) throws EmptyFieldException, PasswordNotMatchException {
         user.validateAllFields();
 
         return User.builder()
