@@ -52,7 +52,7 @@ angular.module('assetController', [])
                         });
                         $rootScope.user.money = parseFloat(response.data.money).toFixed(4);
                     }).catch(function errorCallback(response) {
-                        $scope.errorMessage = 'Problem with getting user assets';
+                       // $scope.errorMessage = 'Problem with getting user assets';
                     })
             }
         }

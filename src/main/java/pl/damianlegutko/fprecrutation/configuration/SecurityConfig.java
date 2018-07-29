@@ -30,10 +30,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/lib/**", "/js/**", "/api/user/**", "/registration", "/login", "/login.html", "/", "/index.html", "/registration.html", "/h2-console/**").anonymous()
+                .antMatchers("/lib/**", "/js/**", "/api/user/**", "/registration", "/logout", "/login", "/login.html", "/", "/index.html", "/registration.html", "/h2-console/**").permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin().loginPage("/").defaultSuccessUrl("/stocks").failureUrl("/")
-                .and().logout().logoutUrl("/api/user/logout").logoutSuccessUrl("/")
                 .and().headers().frameOptions().disable()
                 .and().csrf().disable();
     }

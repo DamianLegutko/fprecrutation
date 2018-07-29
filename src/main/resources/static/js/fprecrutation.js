@@ -56,7 +56,7 @@ fprecrutation.config(['$routeProvider',
         }).
         when('/logout', {
             templateUrl: 'login.html',
-            controller: 'loginController'
+            controller: 'logoutController'
         }).
         otherwise({
             redirectTo: '/'

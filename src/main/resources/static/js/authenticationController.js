@@ -20,18 +20,20 @@ angular.module('authenticationController', [])
         }
     ])
 
-    .controller('logoutController', ['$scope', '$rootScope', '$location', '$http',
-        function($scope, $rootScope, $location, $http) {
+    .controller('logoutController', ['$scope', '$rootScope', '$location', '$http', '$log',
+        function($scope, $rootScope, $location, $http, $log) {
             $scope.errorMessage = '';
-            $scope.logout = function logout() {
-                $http.get('/api/user/logout')
-                    .then(function successCallback(response) {
-                        $rootScope.cleanData();
-                        $location.path("/");
-                    }).catch(function errorCallback(response) {
-                        $scope.errorMessage = response.data.message;
-                })
-            }
+            $http.get('/api/user/logout')
+                .then(function successCallback(response) {
+                    $log.info(response);
+                    $rootScope.stockPrices = [];
+                    $rootScope.stockPricesMap = new Map();
+                    $rootScope.username = '';
+                    $rootScope.apply();
+                    $location.path("/");
+                }).catch(function errorCallback(response) {
+                    $scope.errorMessage = response.data.message;
+            })
         }
     ])
 
