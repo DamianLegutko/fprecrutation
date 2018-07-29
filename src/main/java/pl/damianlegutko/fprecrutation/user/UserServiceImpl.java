@@ -2,6 +2,7 @@ package pl.damianlegutko.fprecrutation.user;
 
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import pl.damianlegutko.fprecrutation.Validators;
@@ -13,14 +14,17 @@ import pl.damianlegutko.fprecrutation.user.exceptions.UserNotExistsException;
 
 import java.math.BigDecimal;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-@Service("serviceForUsers")
+@Service
 @AllArgsConstructor
 @Validated
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     @SneakyThrows
@@ -75,9 +79,10 @@ public class UserServiceImpl implements UserService {
         user.validateAllFields();
 
         return User.builder()
-                .password(user.getPassword())
+                .password(bCryptPasswordEncoder.encode(user.getPassword()))
                 .username(user.getUsername())
                 .money(user.getMoney())
+                .roles(newHashSet(roleRepository.findAll()))
                 .build();
     }
 

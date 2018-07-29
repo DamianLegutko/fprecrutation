@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stocks</title>
+    <meta charset="UTF-8">
+</head>
+
+<body ng-app="fprecrutation">
+    <div class="container" ng-controller="loginController">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h3>Login</h3></div>
+                    <div class="panel-body">
+                        <div ng-if="errorMessage" class="alert alert-danger">
+                            {{ errorMessage }}
+                        </div>
+
+                        <form name="loginForm" data-ng-submit="login(user)">
+                            <label for="username">Username</label>
+                            <div class="form-group" data-ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
+                                <input type="text" name="username" pattern="^[_A-z0-9]{1,}$" id="username" class="form-control"
+                                       data-ng-model="user.username" maxlength="40" minlength="2" autocomplete="username" required />
+                                <span data-ng-show="form.username.$dirty && form.username.$error.required" class="help-block">Username is required</span>
+                            </div>
+
+                            <label for="password">Password</label>
+                            <div class="form-group" data-ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }">
+                                <input type="password" name="password" pattern="^[_A-z0-9]{1,}$" id="password" class="form-control"
+                                       data-ng-model="user.password" maxlength="40" minlength="8" autocomplete="password" required />
+                                <span data-ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
+                            </div>
+
+                            <div class="col-md-6 col-md-offset-3">
+                                <button type="submit" data-ng-disabled="loginForm.$invalid" class="form-actions btn btn-success">
+                                    Sign in
+                                </button>
+                                <a href="#/registration" class="btn btn-link form-actions">
+                                    Registration
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="lib/js/angular.min.js"></script>
+    <script type="text/javascript" src="lib/js/angular-route.min.js"></script>
+    <script type="text/javascript" src="lib/js/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script type="text/javascript" src="js/fprecrutation.js"></script>
+    <script type="text/javascript" src="js/authenticationController.js"></script>
+</body>
+</html>

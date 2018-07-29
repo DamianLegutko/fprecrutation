@@ -7,14 +7,16 @@ import org.springframework.web.bind.annotation.*;
 import pl.damianlegutko.fprecrutation.commonExceptions.EmptyFieldException;
 import pl.damianlegutko.fprecrutation.responses.ExceptionMessage;
 import pl.damianlegutko.fprecrutation.responses.ValidationMessage;
+import pl.damianlegutko.fprecrutation.user.SecurityService;
 import pl.damianlegutko.fprecrutation.user.UserService;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserAlreadyExistsException;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserException;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserHaveNotEnoughMoneyException;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserNotExistsException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ValidationException;
-import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/user")
@@ -22,6 +24,7 @@ import java.math.BigDecimal;
 class UserController {
 
     private final UserService userService;
+    private final SecurityService securityService;
 
     @GetMapping("/get/{userName}")
     ResponseEntity getUser(@PathVariable String userName) {
@@ -36,29 +39,16 @@ class UserController {
     }
 
     @PostMapping("/signin")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     void signin(@RequestBody UserDTO user) {
         userService.findUserByUsername(user.getUsername());
+        securityService.signin(user.getUsername(), user.getPassword());
     }
 
     @GetMapping("/logout")
-    @ResponseStatus(HttpStatus.OK)
-    void signin() {
-        //TODO
-    }
-
-    //TODO temporary REST
-    @PostMapping("/addCash/{userName}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void increaseUserCash(@PathVariable String userName, @RequestParam BigDecimal amount) {
-        userService.giveMoneyToUser(userName, amount);
-    }
-
-    //TODO temporary REST
-    @PostMapping("/subtractCash/{userName}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    void decreaseUserCash(@PathVariable String userName, @RequestParam BigDecimal amount) {
-        userService.takeMoneyFromUser(userName, amount);
+    void logout(HttpServletRequest request, HttpServletResponse response) {
+        securityService.logout(request, response);
     }
 
     @ExceptionHandler(UserNotExistsException.class)

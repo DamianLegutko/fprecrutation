@@ -9,10 +9,10 @@ import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
 public interface UserService {
-    UserDTO findUserByUsername(@NotBlank @Size(min = 3, max = 256) String username);
+    UserDTO findUserByUsername(@NotBlank @Size(min = 3, max = 40) String username);
     void saveUser(UserDTO user);
-    void giveMoneyToUser(@Size(min = 3, max = 256) String userName,
+    void giveMoneyToUser(@Size(min = 3, max = 40) String userName,
                          @NotNull @Positive BigDecimal moneyAmount);
-    void takeMoneyFromUser(@Size(min = 3, max = 256) String userName,
+    void takeMoneyFromUser(@Size(min = 3, max = 40) String userName,
                            @NotNull @Positive BigDecimal moneyAmount);
 }

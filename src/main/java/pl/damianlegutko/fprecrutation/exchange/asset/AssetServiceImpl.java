@@ -22,7 +22,7 @@ import java.util.List;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.isNull;
 
-@Service("assetService")
+@Service
 @AllArgsConstructor
 @Validated
 public class AssetServiceImpl implements AssetService {

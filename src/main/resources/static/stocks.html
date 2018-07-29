@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Stocks</title>
+</head>
+
+<body ng-app="fprecrutation">
+    <div class="container" ng-controller="assetsController">
+        <div ng-if="errorMessage" class="alert alert-danger">
+            {{ errorMessage }}
+        </div>
+        <div class="panel-group">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="col-md-8">
+                        Stocks
+                    </div>
+                    <div class="col-md-2">
+                        Logged in as <strong>{{ username }}</strong>
+                    </div>
+                    <div class="col-md-2">
+                        <a href="#/logout" class="btn btn-danger btn-lg">
+                            <span class="glyphicon glyphicon-off"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <form>
+                        <div class="col-md-6">
+                            <div class="panel-heading">Stock prices</div>
+                            <div class="panel-body">
+                                <table class="table table-hover table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Company</th>
+                                            <th>Value</th>
+                                            <th class="col-md-2">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="stockPrice in stockPrices">
+                                            <td>{{stockPrice.Name}}</td>
+                                            <td>{{stockPrice.Price}}</td>
+                                            <td>
+                                                <button type="button"
+                                                        ng-click="buy($event, stockPrice.Code, stockPrice.Price, stockPrice.Unit)"
+                                                        class="btn btn-info custom-width">Buy</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel-heading"><h3>My wallet</h3></div>
+                            <div class="panel-body">
+                                <table class="table table-hover table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Company</th>
+                                            <th>Unit Price</th>
+                                            <th>Amount</th>
+                                            <th>Value</th>
+                                            <th class="col-md-2">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="userAsset in user.assetWallet">
+                                            <td>{{userAsset.companyCode}}</td>
+                                            <td>{{userAsset.stockPrice}}</td>
+                                            <td>{{userAsset.stockAmount}}</td>
+                                            <td>{{userAsset.value}}</td>
+                                            <td>
+                                                <button type="button" ng-click="sell($event, userAsset.companyCode)" class="btn btn-success custom-width">Sell</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="panel-heading">
+                                <strong>Available money: {{ user.money }} PLN</strong>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="lib/js/angular.min.js"></script>
+    <script type="text/javascript" src="lib/js/angular-route.min.js"></script>
+    <script type="text/javascript" src="lib/js/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script type="text/javascript" src="js/fprecrutation.js"></script>
+    <script type="text/javascript" src="js/assetsController.js"></script>
+
+</body>
+</html>
