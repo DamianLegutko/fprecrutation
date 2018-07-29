@@ -44,7 +44,7 @@
                                             <td>{{stockPrice.Price}}</td>
                                             <td>
                                                 <button type="button"
-                                                        ng-confirm-click="Are you sure to buy {{ stockPrice.Unit }} untit of company {{ stockPrice.Name }} stocks with cost for all {{ stockPrice.Unit * stockPrice.Price }} PLN?"
+                                                        ng-confirm-click="Are you sure to buy {{ stockPrice.Unit }} unit of company {{ stockPrice.Name }} stocks with total cost for all {{ stockPrice.Unit * stockPrice.Price }} PLN?"
                                                         confirmed-click="buy($event, stockPrice.Code, stockPrice.Price, stockPrice.Unit)"
                                                         class="btn btn-info custom-width">Buy</button>
                                             </td>
@@ -74,7 +74,7 @@
                                             <td>{{stockPricesMap.get(userAsset.companyCode).price * userAsset.stockAmount}}</td>
                                             <td>
                                                 <button type="button"
-                                                        ng-confirm-click="Are you sure to sell {{ stockPricesMap.get(userAsset.companyCode).amount }} untit of company {{ userAsset.companyCode }} stocks with cost for all {{ stockPricesMap.get(userAsset.companyCode).amount * stockPricesMap.get(userAsset.companyCode).price }} PLN?"
+                                                        ng-confirm-click="Are you sure to sell {{ stockPricesMap.get(userAsset.companyCode).amount }} unit of company {{ userAsset.companyCode }} stocks with total cost for all {{ stockPricesMap.get(userAsset.companyCode).amount * stockPricesMap.get(userAsset.companyCode).price }} PLN?"
                                                         confirmed-click="sell($event, userAsset.companyCode)" class="btn btn-success custom-width">Sell</button>
                                             </td>
                                         </tr>
