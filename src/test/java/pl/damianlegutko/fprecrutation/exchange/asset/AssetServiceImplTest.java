@@ -613,8 +613,4 @@ public class AssetServiceImplTest {
     private Predicate<UserStock> getUserStockPredicate(Company company) {
         return assetWallet -> assetWallet.getCompanyCode().equals(company.toString());
     }
-
-    @Test
-    public void sellAssetByUser() {
-    }
 }
