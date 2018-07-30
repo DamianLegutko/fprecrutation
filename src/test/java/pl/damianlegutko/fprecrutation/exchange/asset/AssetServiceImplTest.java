@@ -66,8 +66,6 @@ public class AssetServiceImplTest {
                 .build();
 
         userService.saveUser(userDTO);
-
-        securityService.signin(testUser, USER_PASSWORD);
     }
 
     @After

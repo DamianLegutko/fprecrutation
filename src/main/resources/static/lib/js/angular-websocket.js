@@ -63,13 +63,6 @@
       this.url = url || 'Missing URL';
       this.ssl = /(wss)/i.test(this.url);
 
-      // this.binaryType = '';
-      // this.extensions = '';
-      // this.bufferedAmount = 0;
-      // this.trasnmitting = false;
-      // this.buffer = [];
-
-      // TODO: refactor options to use isDefined
       this.scope              = options && options.scope             || $rootScope;
       this.rootScopeFailover  = options && options.rootScopeFailover && true;
       this.useApplyAsync      = options && options.useApplyAsync     || false;

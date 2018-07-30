@@ -13,6 +13,8 @@ import pl.damianlegutko.fprecrutation.user.exceptions.UserAlreadyExistsException
 import pl.damianlegutko.fprecrutation.user.exceptions.UserHaveNotEnoughMoneyException;
 import pl.damianlegutko.fprecrutation.user.exceptions.UserNotExistsException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 
 import static com.google.common.collect.Sets.newHashSet;
@@ -25,6 +27,7 @@ import static java.util.Objects.nonNull;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final SecurityService securityService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
@@ -32,9 +35,9 @@ public class UserServiceImpl implements UserService {
     public UserDTO findUserByUsername(String userName) {
         Validators.objectIsNotNull(userName, "userName");
 
-        User user = userRepository.findByUsername(userName);
+        User user = userRepository.findByUsername(userName.toLowerCase());
 
-        if (isNull(user)) throw new UserNotExistsException(userName);
+        if (isNull(user)) throw new UserNotExistsException(userName.toLowerCase());
 
         return mapUserToDto(user);
     }
@@ -43,10 +46,9 @@ public class UserServiceImpl implements UserService {
     public void saveUser(UserDTO user) {
         user.validateAllFields();
 
-        if (nonNull(userRepository.findByUsername(user.getUsername()))) throw new UserAlreadyExistsException(user.getUsername());
+        if (nonNull(userRepository.findByUsername(user.getUsername().toLowerCase()))) throw new UserAlreadyExistsException(user.getUsername());
 
-        User user1 = mapDtoToUser(user);
-        userRepository.save(user1);
+        userRepository.save(mapDtoToUser(user));
     }
 
     @SneakyThrows
@@ -54,7 +56,7 @@ public class UserServiceImpl implements UserService {
         Validators.objectIsNotNull(userName, "userName");
         Validators.objectIsNotNull(moneyAmount, "moneyAmount");
 
-        User user = userRepository.findByUsername(userName);
+        User user = userRepository.findByUsername(userName.toLowerCase());
 
         if (isNull(user)) throw new UserNotExistsException(userName);
 
@@ -67,7 +69,7 @@ public class UserServiceImpl implements UserService {
         Validators.objectIsNotNull(userName, "userName");
         Validators.objectIsNotNull(moneyAmount, "moneyAmount");
 
-        User user = userRepository.findByUsername(userName);
+        User user = userRepository.findByUsername(userName.toLowerCase());
 
         if (isNull(user)) throw new UserNotExistsException(userName);
 
@@ -75,6 +77,19 @@ public class UserServiceImpl implements UserService {
 
         user.setMoney(user.getMoney().subtract(moneyAmount));
         userRepository.save(user);
+    }
+
+    @SneakyThrows
+    public void signin(String userName, String password) {
+        Validators.objectIsNotNull(userName, "userName");
+        Validators.objectIsNotNull(password, "password");
+
+        securityService.signin(userName.toLowerCase(), password);
+    }
+
+    @SneakyThrows
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        securityService.logout(request, response);
     }
 
     private User mapDtoToUser(UserDTO user) throws EmptyFieldException, PasswordNotMatchException {

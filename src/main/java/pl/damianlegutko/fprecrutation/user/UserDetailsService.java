@@ -23,7 +23,7 @@ class UserDetailsService implements org.springframework.security.core.userdetail
     public UserDetails loadUserByUsername(String username) {
         Validators.objectIsNotNull(username, "username");
 
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username.toLowerCase());
 
         Set<GrantedAuthority> grantedAuthorities = newHashSet();
         user.getRoles().forEach(role -> grantedAuthorities.add(new SimpleGrantedAuthority(role.getName())));

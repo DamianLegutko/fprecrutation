@@ -11,5 +11,4 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EntityScan(basePackages = "pl.damianlegutko.fprecrutation")
 @ComponentScan(basePackages = "pl.damianlegutko.fprecrutation")
 @EnableTransactionManagement
-public interface AppConfig {
-}
+public interface AppConfig {}

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.damianlegutko.fprecrutation.commonExceptions.EmptyFieldException;
 import pl.damianlegutko.fprecrutation.responses.ExceptionMessage;
 import pl.damianlegutko.fprecrutation.responses.ValidationMessage;
-import pl.damianlegutko.fprecrutation.user.SecurityService;
 import pl.damianlegutko.fprecrutation.user.UserService;
 import pl.damianlegutko.fprecrutation.user.exceptions.*;
 
@@ -21,10 +20,9 @@ import javax.validation.ValidationException;
 class UserController {
 
     private final UserService userService;
-    private final SecurityService securityService;
 
     @GetMapping("/get/{userName}")
-    ResponseEntity getUser(@PathVariable String userName) {
+    ResponseEntity getUser(@PathVariable String userName) throws UserNotExistsException {
        UserDTO userDTO = userService.findUserByUsername(userName);
        return new ResponseEntity(userDTO, HttpStatus.OK);
     }
@@ -38,13 +36,13 @@ class UserController {
     @PostMapping("/signin")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void signin(@RequestBody UserDTO user) {
-        securityService.signin(user.getUsername(), user.getPassword());
+        userService.signin(user.getUsername(), user.getPassword());
     }
 
     @GetMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void logout(HttpServletRequest request, HttpServletResponse response) {
-        securityService.logout(request, response);
+        userService.logout(request, response);
     }
 
     @ExceptionHandler(UserNotExistsException.class)

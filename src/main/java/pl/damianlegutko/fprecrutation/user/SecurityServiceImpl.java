@@ -24,10 +24,12 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public String findLoggedInUsername() {
-        Object userDetails = SecurityContextHolder.getContext().getAuthentication().getDetails();
+        Object userDetails = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         if (userDetails instanceof UserDetails) {
             return ((UserDetails) userDetails).getUsername();
         }
+
         return null;
     }
 
@@ -46,6 +48,7 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         if (nonNull(authentication)){
             new SecurityContextLogoutHandler().logout(request, response, authentication);
         }

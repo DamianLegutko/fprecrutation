@@ -25,11 +25,6 @@ angular.module('authenticationController', [])
             $scope.errorMessage = '';
             $http.get('/api/user/logout')
                 .then(function successCallback(response) {
-                    $log.info(response);
-                    $rootScope.stockPrices = [];
-                    $rootScope.stockPricesMap = new Map();
-                    $rootScope.username = '';
-                    $rootScope.apply();
                     $location.path("/");
                 }).catch(function errorCallback(response) {
                     $scope.errorMessage = response.data.message;
