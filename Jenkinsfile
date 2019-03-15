@@ -8,7 +8,7 @@ pipeline {
         }
         stage('build') {
             steps {
-                bat 'gradlew'
+                bat 'gradlew build'
             }
         }
     }
