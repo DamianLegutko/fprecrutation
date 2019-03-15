@@ -1,12 +1,12 @@
 pipeline {
     agent any
     stages {
-        stage('build') {
+        stage('gradleStatus') {
             steps {
-                bat 'set'
+                bat 'gradlew --status'
             }
         }
-        stage('set') {
+        stage('build') {
             steps {
                 bat 'set'
             }
